@@ -1,1 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YETI × HoBB — Team Map</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue:#1E88E5;--blue-d:#1565C0;--blue-l:#E3F2FD;--blue-m:#90CAF9;
+  --ink:#0f172a;--ink2:#475569;--ink3:#94a3b8;
+  --bg:#F0F4F8;--white:#fff;--border:#e2e8f0;
+  --green:#10b981;--green-l:#d1fae5;--amber:#f59e0b;--amber-l:#fef3c7;
+  --red:#ef4444;--red-l:#fee2e2;--purple:#8b5cf6;--purple-l:#ede9fe;
+  --radius:14px;--shadow:0 2px 12px rgba(15,23,42,.07);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+.topbar{background:var(--ink);color:white;padding:0 24px;display:flex;align-items:center;gap:12px;height:56px;position:sticky;top:0;z-index:300}
+.topbar-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;letter-spacing:-.02em;white-space:nowrap}
+.topbar-logo span{color:var(--blue-m)}
+.topbar-tabs{display:flex;gap:2px;margin-left:16px}
+.tab-btn{background:none;border:none;color:rgba(255,255,255,.5);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;padding:6px 13px;border-radius:8px;cursor:pointer;transition:all .15s;white-space:nowrap}
+.tab-btn:hover{color:white;background:rgba(255,255,255,.1)}
+.tab-btn.active{color:white;background:var(--blue)}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.member-badge{background:rgba(255,255,255,.1);border-radius:100px;padding:4px 10px;font-size:11px;color:rgba(255,255,255,.7);font-family:'DM Mono',monospace;white-space:nowrap}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0;cursor:help}
+.sync-dot.warn{background:var(--amber)}
+.topbar-btn{border:none;border-radius:8px;padding:6px 13px;font-size:11px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .15s;white-space:nowrap}
+.topbar-btn.blue{background:var(--blue);color:white}
+.topbar-btn.blue:hover{background:var(--blue-d)}
+.topbar-btn.ghost{background:rgba(255,255,255,.08);color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.15)}
+.topbar-btn.ghost:hover{background:rgba(255,255,255,.15);color:white}
+.page{display:none;padding:28px 28px 80px}
+.page.active{display:block}
+.section-label{font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:12px}
+.heads-bar{background:var(--ink);border-radius:var(--radius);padding:16px 20px;margin-bottom:20px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.heads-title{font-family:'Syne',sans-serif;font-weight:700;font-size:11px;color:rgba(255,255,255,.35);letter-spacing:.1em;text-transform:uppercase;margin-right:4px}
+.head-chip{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:100px;padding:5px 12px;font-size:11px;color:white;display:flex;align-items:center;gap:5px}
+.head-chip-role{font-size:10px;color:var(--blue-m)}
+.filters-bar{background:var(--white);border-radius:var(--radius);padding:13px 16px;margin-bottom:16px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;box-shadow:var(--shadow)}
+.filter-group{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.filter-sep{width:1px;height:20px;background:var(--border);margin:0 4px}
+.filter-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3)}
+.fpill{background:var(--bg);border:1.5px solid var(--border);border-radius:100px;padding:3px 10px;font-size:11px;font-weight:500;cursor:pointer;color:var(--ink2);transition:all .15s;user-select:none;white-space:nowrap}
+.fpill:hover{border-color:var(--blue);color:var(--blue)}
+.fpill.active{background:var(--blue);border-color:var(--blue);color:white}
+.sort-select{border:1.5px solid var(--border);border-radius:8px;padding:4px 8px;font-size:11px;font-family:'DM Sans',sans-serif;color:var(--ink2);background:var(--bg);cursor:pointer;outline:none}
+.pending-section{margin-bottom:22px}
+.pending-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:9px}
+.pending-card{background:white;border:2px dashed var(--border);border-radius:var(--radius);padding:14px 16px;display:flex;flex-direction:column;gap:6px;opacity:.7;cursor:pointer;transition:all .2s}
+.pending-card:hover{border-color:var(--blue);opacity:1;box-shadow:var(--shadow)}
+.pending-name{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:var(--ink)}
+.pending-contact{font-size:10px;color:var(--ink3);font-family:'DM Mono',monospace}
+.pending-cta{font-size:10px;color:var(--blue);font-weight:600}
+.pending-dot{width:6px;height:6px;border-radius:50%;background:var(--amber);display:inline-block;margin-right:5px}
+.team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.mcard{background:white;border:1.5px solid var(--border);border-radius:var(--radius);padding:18px 18px 13px;display:flex;flex-direction:column;gap:8px;cursor:pointer;transition:all .2s;animation:fadeUp .3s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.mcard:hover{border-color:var(--blue-m);box-shadow:0 6px 24px rgba(30,136,229,.1)}
+.mcard-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.mcard-name{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:var(--blue)}
+.mcard-bg{font-size:10px;color:var(--ink3);margin-top:1px}
+.hat-badge{background:var(--bg);border-radius:6px;padding:3px 8px;font-size:10px;font-weight:600;white-space:nowrap}
+.mcard-tags{display:flex;flex-wrap:wrap;gap:4px}
+.rtag{background:#EFF6FF;border:1px solid #BFDBFE;border-radius:100px;padding:2px 7px;font-size:9px;font-weight:500;color:var(--blue-d)}
+.mcard-row{font-size:11px;color:var(--ink2);line-height:1.5;display:flex;gap:6px}
+.mcard-key{font-weight:600;color:var(--ink);min-width:46px;flex-shrink:0;font-size:9px;text-transform:uppercase;letter-spacing:.04em;padding-top:1px}
+.mcard-footer{display:flex;justify-content:space-between;align-items:center;padding-top:6px;border-top:1px solid var(--border)}
+.incentive-icons{font-size:13px;letter-spacing:2px}
+.time-badge{background:var(--blue-l);color:var(--blue-d);border-radius:5px;padding:2px 6px;font-size:9px;font-weight:700;font-family:'DM Mono',monospace}
+.ticket-count-chip{background:var(--purple-l);color:var(--purple);border-radius:5px;padding:2px 6px;font-size:9px;font-weight:700}
+.driver-bar{display:flex;align-items:center;gap:6px;font-size:9px;color:var(--ink3)}
+.driver-track{flex:1;height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+.driver-fill{height:100%;background:linear-gradient(90deg,var(--blue-m),var(--blue));border-radius:2px}
+/* tickets */
+.tickets-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;flex-wrap:wrap;gap:10px}
+.tickets-header-left h2{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;letter-spacing:-.02em}
+.tickets-header-left p{font-size:11px;color:var(--ink3);margin-top:3px}
+.new-ticket-btn{background:var(--blue);color:white;border:none;border-radius:9px;padding:9px 18px;font-size:13px;font-weight:600;font-family:'Syne',sans-serif;cursor:pointer}
+.new-ticket-btn:hover{background:var(--blue-d)}
+.kanban{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;align-items:start}
+@media(max-width:900px){.kanban{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.kanban{grid-template-columns:1fr}}
+.kanban-col{background:var(--bg);border-radius:var(--radius);padding:12px;min-height:180px}
+.kanban-col-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.kanban-col-title{font-family:'Syne',sans-serif;font-weight:700;font-size:11px;letter-spacing:.04em;text-transform:uppercase}
+.kanban-col-count{background:white;border-radius:100px;padding:2px 7px;font-size:10px;font-weight:700;font-family:'DM Mono',monospace;color:var(--ink2)}
+.tcard{background:white;border-radius:9px;padding:12px 12px 9px;margin-bottom:7px;cursor:pointer;border:1.5px solid var(--border);transition:all .2s;animation:fadeUp .2s ease both}
+.tcard:hover{border-color:var(--blue-m);box-shadow:0 4px 14px rgba(30,136,229,.09)}
+.tcard-title{font-size:12px;font-weight:600;color:var(--ink);line-height:1.4;margin-bottom:7px}
+.tcard-meta{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.priority-chip{border-radius:4px;padding:2px 6px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.priority-High{background:var(--red-l);color:var(--red)}
+.priority-Medium{background:var(--amber-l);color:var(--amber)}
+.priority-Low{background:var(--green-l);color:var(--green)}
+.area-chip{background:var(--blue-l);color:var(--blue-d);border-radius:4px;padding:2px 6px;font-size:9px;font-weight:600}
+.owner-chip{background:var(--bg);color:var(--ink2);border-radius:4px;padding:2px 6px;font-size:9px;font-weight:500;border:1px solid var(--border)}
+.due-chip{font-size:9px;color:var(--ink3);font-family:'DM Mono',monospace}
+/* form */
+.form-wrap{max-width:650px;margin:0 auto}
+.form-hero{background:linear-gradient(135deg,var(--ink) 0%,#1e3a5f 100%);border-radius:var(--radius);padding:26px 30px;margin-bottom:20px;color:white}
+.form-hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:21px;letter-spacing:-.02em;margin-bottom:5px}
+.form-hero p{font-size:12px;opacity:.7;line-height:1.7}
+.form-section{background:white;border-radius:var(--radius);padding:22px 26px;margin-bottom:12px;box-shadow:var(--shadow)}
+.form-section-title{font-family:'Syne',sans-serif;font-weight:700;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);margin-bottom:16px;display:flex;align-items:center;gap:7px}
+.form-section-title span{background:var(--blue);color:white;width:19px;height:19px;border-radius:5px;font-size:10px;display:flex;align-items:center;justify-content:center}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.field{display:flex;flex-direction:column;gap:4px}
+.field.full{grid-column:1/-1}
+.field label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ink2)}
+.field .helper{font-size:10px;color:var(--ink3);margin-top:-2px;font-style:italic;line-height:1.5}
+.field input,.field select,.field textarea{border:1.5px solid var(--border);border-radius:7px;padding:9px 10px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--ink);background:var(--bg);outline:none;transition:border-color .15s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--blue);background:white}
+.field textarea{resize:vertical;min-height:66px;line-height:1.6}
+.checkbox-group{display:flex;flex-wrap:wrap;gap:5px}
+.cbox{display:flex;align-items:center;gap:5px;background:var(--bg);border-radius:7px;padding:6px 10px;font-size:11px;cursor:pointer;border:1.5px solid transparent;transition:all .15s;user-select:none;line-height:1.3}
+.cbox:has(input:checked){border-color:var(--blue);background:var(--blue-l)}
+.cbox input{display:none}
+.radio-group{display:flex;flex-wrap:wrap;gap:6px}
+.radio-opt{display:flex;align-items:flex-start;gap:5px;background:var(--bg);border-radius:7px;padding:8px 11px;font-size:11px;cursor:pointer;border:1.5px solid transparent;transition:all .15s;user-select:none;line-height:1.4}
+.radio-opt:has(input:checked){border-color:var(--blue);background:var(--blue-l)}
+.radio-opt input{display:none}
+.slider-wrap{display:flex;flex-direction:column;gap:5px}
+.slider-wrap input[type=range]{-webkit-appearance:none;width:100%;height:5px;border-radius:3px;background:var(--border);outline:none}
+.slider-wrap input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--blue);cursor:pointer;border:2px solid white;box-shadow:0 2px 5px rgba(30,136,229,.4)}
+.slider-labels{display:flex;justify-content:space-between;font-size:9px;color:var(--ink3)}
+.submit-btn{width:100%;background:var(--blue);color:white;border:none;border-radius:9px;padding:13px;font-size:14px;font-weight:600;font-family:'Syne',sans-serif;cursor:pointer;transition:background .15s;margin-top:5px}
+.submit-btn:hover{background:var(--blue-d)}
+/* modals */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.48);z-index:500;display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{background:white;border-radius:16px;width:100%;max-width:540px;max-height:90vh;overflow-y:auto;transform:translateY(12px);transition:transform .2s;display:flex;flex-direction:column}
+.modal-overlay.open .modal{transform:translateY(0)}
+.modal-header{padding:20px 22px 14px;display:flex;justify-content:space-between;align-items:flex-start;gap:10px;position:sticky;top:0;background:white;border-bottom:1px solid var(--border);z-index:1}
+.modal-name{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--blue)}
+.modal-sub{font-size:11px;color:var(--ink3);margin-top:2px}
+.modal-close{background:var(--bg);border:none;border-radius:6px;width:28px;height:28px;cursor:pointer;font-size:15px;color:var(--ink2);flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.modal-body{padding:16px 22px 22px;display:flex;flex-direction:column;gap:13px}
+.modal-section{display:flex;flex-direction:column;gap:4px}
+.modal-section-title{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin-bottom:2px}
+.modal-row{display:flex;gap:7px;font-size:12px;line-height:1.6}
+.modal-key{font-weight:600;color:var(--ink);min-width:108px;flex-shrink:0;font-size:11px}
+.modal-val{color:var(--ink2)}
+.modal-tags{display:flex;flex-wrap:wrap;gap:5px}
+.modal-tag{background:var(--blue-l);color:var(--blue-d);border-radius:100px;padding:3px 9px;font-size:11px;font-weight:500}
+.modal-driver{display:flex;align-items:center;gap:7px;flex:1}
+.modal-driver-track{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.modal-driver-fill{height:100%;background:linear-gradient(90deg,var(--blue-m),var(--blue));border-radius:3px}
+.modal-field{display:flex;flex-direction:column;gap:4px;margin-bottom:3px}
+.modal-field label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ink2)}
+.modal-field select,.modal-field input,.modal-field textarea{border:1.5px solid var(--border);border-radius:7px;padding:8px 10px;font-size:12px;font-family:'DM Sans',sans-serif;color:var(--ink);background:var(--bg);outline:none}
+.modal-field select:focus,.modal-field input:focus,.modal-field textarea:focus{border-color:var(--blue)}
+.modal-field textarea{resize:vertical;min-height:58px}
+.modal-2col{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.modal-actions{display:flex;gap:7px;justify-content:flex-end;padding-top:4px}
+.btn-primary{background:var(--blue);color:white;border:none;border-radius:7px;padding:8px 15px;font-size:12px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer}
+.btn-primary:hover{background:var(--blue-d)}
+.btn-secondary{background:none;border:1.5px solid var(--border);border-radius:7px;padding:8px 13px;font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;color:var(--ink2)}
+.btn-danger{background:var(--red-l);border:none;border-radius:7px;padding:8px 13px;font-size:12px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;color:var(--red)}
+.ticket-link{display:flex;align-items:center;gap:6px;padding:7px 9px;background:var(--bg);border-radius:7px;cursor:pointer;transition:background .15s;border:1px solid var(--border)}
+.ticket-link:hover{background:var(--blue-l);border-color:var(--blue-m)}
+.ticket-link-title{font-size:11px;font-weight:500;color:var(--ink);flex:1}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--ink);color:white;padding:9px 20px;border-radius:100px;font-size:12px;font-weight:500;z-index:600;opacity:0;transition:all .25s;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.loading-overlay{position:fixed;inset:0;background:rgba(240,244,248,.75);z-index:400;align-items:center;justify-content:center;display:none}
+.loading-overlay.show{display:flex}
+.spinner{border:3px solid var(--blue-m);border-top-color:var(--blue);border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:640px){
+  .page{padding:14px 14px 60px}
+  .form-grid{grid-template-columns:1fr}
+  .team-grid{grid-template-columns:1fr}
+  .topbar{padding:0 14px}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-logo">YETI <span>×</span> HoBB</div>
+  <div class="topbar-tabs">
+    <button class="tab-btn active" onclick="showPage('team')">Team Map</button>
+    <button class="tab-btn" onclick="showPage('form')">Fill My Card</button>
+    <button class="tab-btn" onclick="showPage('tickets')">Tickets</button>
+  </div>
+  <div class="topbar-right">
+    <div class="sync-dot" id="sync-dot" title="Backend status"></div>
+    <span class="member-badge" id="count-badge">0 filled</span>
+    <button class="topbar-btn ghost" onclick="exportJSON()">⬇ Export JSON</button>
+    <button class="topbar-btn blue" onclick="showPage('form')">＋ Add my card</button>
+  </div>
+</div>
+
+<div class="loading-overlay" id="loading-overlay">
+  <div class="spinner" style="width:30px;height:30px"></div>
+</div>
+
+<!-- ══ TEAM PAGE ══ -->
+<div class="page active" id="page-team">
+  <div class="heads-bar">
+    <div class="heads-title">Board / Heads</div>
+    <div class="head-chip">👑 Alexander Grots <span class="head-chip-role">Head of Design Thinking</span></div>
+    <div class="head-chip">👑 Julia (SA) <span class="head-chip-role">HoD & Logistics · +27 84 277 9697</span></div>
+    <div class="head-chip">👑 Valentina F <span class="head-chip-role">HoD & Logistics · +593 98 645 4543</span></div>
+    <div class="head-chip">👑 Sandra Hübner <span class="head-chip-role">OberYETI · +49 172 2457729</span></div>
+  </div>
+  <div class="pending-section" id="pending-section">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <div class="section-label" style="margin-bottom:0">⏳ Waiting to fill their card</div>
+      <button onclick="openAddContactModal()" style="background:var(--blue);color:white;border:none;border-radius:7px;padding:5px 13px;font-size:11px;font-weight:600;font-family:DM Sans,sans-serif;cursor:pointer">＋ Add contact</button>
+    </div>
+    <div class="pending-grid" id="pending-grid"></div>
+  </div>
+  <div class="filters-bar">
+    <div class="filter-group">
+      <span class="filter-label">Hat</span>
+      <button class="fpill active" data-f="hat" data-v="all">All</button>
+      <button class="fpill" data-f="hat" data-v="Ops">🧱 Ops</button>
+      <button class="fpill" data-f="hat" data-v="Management">🧭 Lead</button>
+      <button class="fpill" data-f="hat" data-v="C-Level">🚀 Vision</button>
+      <button class="fpill" data-f="hat" data-v="Not sure">👀 Not sure</button>
+    </div>
+    <div class="filter-sep"></div>
+    <div class="filter-group">
+      <span class="filter-label">Role</span>
+      <button class="fpill active" data-f="role" data-v="all">All</button>
+      <button class="fpill" data-f="role" data-v="Builder">🔧 Builder</button>
+      <button class="fpill" data-f="role" data-v="Strategist">🧠 Strategist</button>
+      <button class="fpill" data-f="role" data-v="Communicator">🎤 Comm</button>
+      <button class="fpill" data-f="role" data-v="Visual">🎨 Visual</button>
+      <button class="fpill" data-f="role" data-v="Connector">🤝 Connector</button>
+      <button class="fpill" data-f="role" data-v="Organizer">📅 Organizer</button>
+      <button class="fpill" data-f="role" data-v="Analyst">📊 Analyst</button>
+    </div>
+    <div class="filter-sep"></div>
+    <div class="filter-group">
+      <span class="filter-label">Sort</span>
+      <select class="sort-select" id="sort-select" onchange="renderCards()">
+        <option value="default">Default</option>
+        <option value="driver-desc">Most Driver ↑</option>
+        <option value="driver-asc">Most Support ↑</option>
+        <option value="time-desc">Most time ↑</option>
+      </select>
+    </div>
+  </div>
+  <div class="section-label">✅ Filled cards &nbsp;·&nbsp; <span style="font-weight:400;font-style:italic;text-transform:none;letter-spacing:0">all data exportable via ⬇ Export JSON for LLM analysis</span></div>
+  <div class="team-grid" id="team-grid"></div>
+</div>
+
+<!-- ══ FORM PAGE ══ -->
+<div class="page" id="page-form">
+<div class="form-wrap">
+  <div class="form-hero">
+    <h1>Fill your Team Card</h1>
+    <p>Takes ~5 minutes. Be honest — the more specific you are, the better we match roles so this feels like play for you and looks like work to others.</p>
+  </div>
+  <div class="form-section">
+    <div class="form-section-title"><span>1</span>Basics</div>
+    <div class="form-grid">
+      <div class="field full"><label>Name *</label><input type="text" id="f-name" placeholder="Your name as people know you here"></div>
+      <div class="field"><label>Study / Background</label><input type="text" id="f-background" placeholder="Fine Arts, Informatics…"></div>
+      <div class="field"><label>Based in</label><input type="text" id="f-location" placeholder="City / Country this semester"></div>
+    </div>
+  </div>
+  <div class="form-section">
+    <div class="form-section-title"><span>2</span>Weird Zone of Genius</div>
+    <div class="form-grid">
+      <div class="field full"><label>People usually ask me for help with…</label><div class="helper">e.g. writing messages, organizing stuff, visuals, tech tools, group vibes, strategy</div><textarea id="f-askfor"></textarea></div>
+      <div class="field full"><label>What feels like PLAY to you but looks like WORK to others?</label><div class="helper">You could do this for hours without noticing time.</div><textarea id="f-play"></textarea></div>
+      <div class="field full"><label>Pick up to 3 roles that fit you best right now</label>
+        <div class="checkbox-group" id="roleTags-checks">
+          <label class="cbox"><input type="checkbox" value="Builder">🔧 Builder / Maker</label>
+          <label class="cbox"><input type="checkbox" value="Strategist">🧠 Strategist</label>
+          <label class="cbox"><input type="checkbox" value="Communicator">🎤 Communicator</label>
+          <label class="cbox"><input type="checkbox" value="Visual">🎨 Visual / Design</label>
+          <label class="cbox"><input type="checkbox" value="Connector">🤝 Connector</label>
+          <label class="cbox"><input type="checkbox" value="Organizer">📅 Organizer</label>
+          <label class="cbox"><input type="checkbox" value="Analyst">📊 Analyst</label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="form-section">
+    <div class="form-section-title"><span>3</span>Execution Energy</div>
+    <div class="form-grid">
+      <div class="field full"><label>When we stop ideating and start DOING, what do you naturally pick up first?</label><div class="helper">Be specific: "I open Figma", "I write the doc", "I message people", "I set up the Notion board"</div><textarea id="f-natural"></textarea></div>
+      <div class="field full"><label>For this HoBB project, what would be a FUN responsibility for you?</label><div class="helper">1–2 sentences.</div><textarea id="f-funresp"></textarea></div>
+      <div class="field full"><label>Realistic time per week until Athens</label>
+        <div class="radio-group">
+          <label class="radio-opt"><input type="radio" name="time" value="~2–3h">~2–3h</label>
+          <label class="radio-opt"><input type="radio" name="time" value="4–6h">4–6h</label>
+          <label class="radio-opt"><input type="radio" name="time" value="7–10h">7–10h</label>
+          <label class="radio-opt"><input type="radio" name="time" value="10h+">10h+</label>
+        </div>
+      </div>
+      <div class="field"><label>What drains you fast?</label><div class="helper">So we don't put you there.</div><textarea id="f-drainers" style="min-height:54px"></textarea></div>
+      <div class="field"><label>Hard constraints?</label><div class="helper">Exams, work, travel…</div><textarea id="f-constraints" style="min-height:54px"></textarea></div>
+    </div>
+  </div>
+  <div class="form-section">
+    <div class="form-section-title"><span>4</span>Principal Energy</div>
+    <div class="form-grid">
+      <div class="field full"><label>If you had to OWN one slice of this project, what would it be?</label><div class="helper">e.g. visual identity, on-site experience, content & docs, Turkish group coordination, logistics…</div><textarea id="f-owned"></textarea></div>
+      <div class="field full"><label>How ready to be in the driver's seat? <span id="driver-display" style="font-family:'DM Mono',monospace;color:var(--blue)">5</span>/10</label>
+        <div class="slider-wrap"><input type="range" min="1" max="10" value="5" id="f-driver" oninput="document.getElementById('driver-display').textContent=this.value"><div class="slider-labels"><span>Not ready</span><span>Fully ready</span></div></div>
+      </div>
+      <div class="field full"><label>Why that number?</label><textarea id="f-driverwhy" style="min-height:54px"></textarea></div>
+    </div>
+  </div>
+  <div class="form-section">
+    <div class="form-section-title"><span>5</span>Incentives / Needs</div>
+    <div class="form-grid">
+      <div class="field full"><label>What do YOU want most from this project?</label>
+        <div class="checkbox-group" id="incentives-checks">
+          <label class="cbox"><input type="checkbox" value="Money">💰 Money / stipend</label>
+          <label class="cbox"><input type="checkbox" value="Portfolio">📁 Portfolio / proof of work</label>
+          <label class="cbox"><input type="checkbox" value="Network">🌐 Network / interesting people</label>
+          <label class="cbox"><input type="checkbox" value="Mentorship">🧑‍🏫 Mentorship / feedback</label>
+          <label class="cbox"><input type="checkbox" value="Clarity">🧭 Clarity about myself</label>
+          <label class="cbox"><input type="checkbox" value="Leadership">🧱 Leadership practice</label>
+          <label class="cbox"><input type="checkbox" value="Travel">✈️ Athens / travel / exposure</label>
+          <label class="cbox"><input type="checkbox" value="Opportunities">🎯 Future opportunities</label>
+          <label class="cbox"><input type="checkbox" value="Community">🤝 Community / friends</label>
+          <label class="cbox"><input type="checkbox" value="Fun">😄 Fun / play / memory</label>
+        </div>
+      </div>
+      <div class="field full"><label>If I could ask for ONE MORE THING, it would be…</label><div class="helper">Be honest — we can't promise, but we want to know.</div><input type="text" id="f-otherincentive" placeholder="…"></div>
+    </div>
+  </div>
+  <div class="form-section">
+    <div class="form-section-title"><span>6</span>Personal Win</div>
+    <div class="form-grid">
+      <div class="field full"><label>What would make this HoBB experience a win for YOU personally?</label><div class="helper">2–3 sentences. Imagine looking back in 6 months.</div><textarea id="f-win"></textarea></div>
+    </div>
+  </div>
+  <div class="form-section">
+    <div class="form-section-title"><span>7</span>Company Hat</div>
+    <div class="form-grid">
+      <div class="field full"><label>Which hat feels most natural right now?</label>
+        <div class="radio-group">
+          <label class="radio-opt"><input type="radio" name="hat" value="Ops">🧱 Ops / Implementer – "Give me a clear plan, I'll make it happen."</label>
+          <label class="radio-opt"><input type="radio" name="hat" value="Management">🧭 Team Lead – "Coordinating people + tasks, vision to reality."</label>
+          <label class="radio-opt"><input type="radio" name="hat" value="C-Level">🚀 C-Level / Vision – "I define direction and what we say yes/no to."</label>
+          <label class="radio-opt"><input type="radio" name="hat" value="Not sure">👀 Not sure yet – "I'm exploring."</label>
+        </div>
+      </div>
+      <div class="field full"><label>Fulfill others' vision ← → Originate your own &nbsp;<span id="fulfill-display" style="font-family:'DM Mono',monospace;color:var(--blue)">5</span>/10</label>
+        <div class="slider-wrap"><input type="range" min="1" max="10" value="5" id="f-fulfill" oninput="document.getElementById('fulfill-display').textContent=this.value"><div class="slider-labels"><span>1 = Fulfill others</span><span>10 = Originate own</span></div></div>
+      </div>
+      <div class="field full"><label>What makes you choose that hat?</label><div class="helper">1–2 sentences. Past experiences, what felt good / bad.</div><textarea id="f-hatwhy" style="min-height:54px"></textarea></div>
+    </div>
+  </div>
+  <div class="form-section" style="padding:16px 26px">
+    <button class="submit-btn" onclick="submitForm()">🚀 Add my card to the team map</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ TICKETS PAGE ══ -->
+<div class="page" id="page-tickets">
+  <div class="tickets-header">
+    <div class="tickets-header-left">
+      <h2>Tickets</h2>
+      <p>Concrete tasks we own. Each ticket has a clear title, status, and owner. This is how we move from mapping to executing.</p>
+    </div>
+    <button class="new-ticket-btn" onclick="openNewTicketModal()">＋ New Ticket</button>
+  </div>
+  <div class="filters-bar">
+    <div class="filter-group">
+      <span class="filter-label">Area</span>
+      <button class="fpill active" data-tf="area" data-tv="all">All</button>
+      <button class="fpill" data-tf="area" data-tv="Content">Content</button>
+      <button class="fpill" data-tf="area" data-tv="Ops">Ops</button>
+      <button class="fpill" data-tf="area" data-tv="Space">Space</button>
+      <button class="fpill" data-tf="area" data-tv="Turkish Group">Turkish Group</button>
+      <button class="fpill" data-tf="area" data-tv="Design">Design</button>
+      <button class="fpill" data-tf="area" data-tv="Comms">Comms</button>
+    </div>
+    <div class="filter-sep"></div>
+    <div class="filter-group">
+      <span class="filter-label">Priority</span>
+      <button class="fpill active" data-tf="priority" data-tv="all">All</button>
+      <button class="fpill" data-tf="priority" data-tv="High">🔴 High</button>
+      <button class="fpill" data-tf="priority" data-tv="Medium">🟡 Medium</button>
+      <button class="fpill" data-tf="priority" data-tv="Low">🟢 Low</button>
+    </div>
+  </div>
+  <div class="kanban" id="kanban"></div>
+</div>
+
+<!-- ══ MEMBER MODAL ══ -->
+<div class="modal-overlay" id="member-modal" onclick="closeMemberModal(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div><div class="modal-name" id="mm-name"></div><div class="modal-sub" id="mm-sub"></div></div>
+      <button class="modal-close" onclick="closeMemberModalBtn()">✕</button>
+    </div>
+    <div class="modal-body" id="mm-body"></div>
+  </div>
+</div>
+
+<!-- ══ TICKET MODAL ══ -->
+<div class="modal-overlay" id="ticket-modal" onclick="closeTicketModal(event)">
+  <div class="modal" style="max-width:500px">
+    <div class="modal-header">
+      <div><div class="modal-name" id="tm-title" style="font-size:15px"></div><div class="modal-sub" id="tm-sub"></div></div>
+      <button class="modal-close" onclick="closeTicketModalBtn()">✕</button>
+    </div>
+    <div class="modal-body" id="tm-body"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════
+// BACKEND CONFIG — auto-detects Railway deployment
+// If you serve index.html from the same server as the API, this just works.
+// If hosting frontend separately, set: const API_BASE = 'https://your-railway-url.up.railway.app'
+// ══════════════════════════════════════
+const API_BASE = window.YETI_API_BASE || (location.hostname === 'localhost' ? 'http://localhost:3000' : window.location.origin);
+
+let members = [];
+let tickets = [];
+let backendOK = false;
+let activeFilters = {hat:'all', role:'all'};
+let activeTicketFilters = {area:'all', priority:'all'};
+let currentTicketId = null;
+
+const PENDING = [
+  {name:'You (Leon)',contact:'Principal'},
+  {name:'Clara',contact:'+49 1520 6170489'},
+  {name:'Julian',contact:'+49 1515 6140488'},
+
+  {name:'Δ',contact:'+49 176 14190405'},
+  {name:'Alp Gülcüler',contact:'+90 537 340 93 45'},
+  {name:'Annabell',contact:'+49 1514 1221740'},
+  {name:'devshetty57',contact:'+49 1521 4033149'},
+  {name:'Harshita Sharma',contact:'+49 1575 2473278'},
+  {name:'Julia (DE)',contact:'+49 171 8200946'},
+  {name:'Kairavin',contact:'+49 176 57790559'},
+  {name:'Matty Driesnack',contact:'+49 1522 4891290'},
+  {name:'?',contact:'+31 6 51855915'},
+  {name:'?',contact:'+90 530 555 42 45'},
+  {name:'?',contact:'+90 530 937 30 97'},
+  {name:'?',contact:'+90 531 985 68 19'},
+  {name:'?',contact:'+90 532 276 29 66'},
+  {name:'?',contact:'+90 532 601 84 99'},
+  {name:'?',contact:'+90 532 667 44 19'},
+  {name:'?',contact:'+90 533 211 68 46'},
+];
+const ICONS = {Money:'💰',Portfolio:'📁',Network:'🌐',Mentorship:'🧑‍🏫',Clarity:'🧭',Leadership:'🧱',Travel:'✈️',Opportunities:'🎯',Community:'🤝',Fun:'😄'};
+const HAT = {Ops:'🧱 Ops',Management:'🧭 Lead','C-Level':'🚀 Vision','Not sure':'👀 Not sure'};
+const STATUS_COLS = ['Backlog','In Progress','Blocked','Done'];
+const S_COLOR = {Backlog:'var(--ink3)','In Progress':'var(--blue)',Blocked:'var(--red)',Done:'var(--green)'};
+
+// ── API helpers ──
+async function api(path, opts={}) {
+  if(!API_BASE) throw new Error('no-backend');
+  const res = await fetch(API_BASE+path, {
+    headers:{'Content-Type':'application/json'},
+    ...opts,
+    body: opts.body ? JSON.stringify(opts.body) : undefined
+  });
+  if(!res.ok) throw new Error(res.status);
+  return res.json();
+}
+
+async function loadData() {
+  try {
+    const [m,t] = await Promise.all([api('/api/members'), api('/api/tickets')]);
+    members=m; tickets=t; backendOK=true;
+    save();
+    setSyncDot(true);
+  } catch(e) {
+    members = JSON.parse(localStorage.getItem('yeti-hobb-members')||'[]');
+    tickets = JSON.parse(localStorage.getItem('yeti-hobb-tickets')||'[]');
+    backendOK=false;
+    setSyncDot(false);
+  }
+}
+async function saveMember(m) {
+  if(backendOK) try { return await api('/api/members',{method:'POST',body:m}); } catch(e){}
+  return m;
+}
+async function saveTicketAPI(t, isUpdate) {
+  if(backendOK) try {
+    if(isUpdate) return await api('/api/tickets/'+t.id,{method:'PUT',body:t});
+    return await api('/api/tickets',{method:'POST',body:t});
+  } catch(e){}
+  return t;
+}
+async function getExportData() {
+  if(backendOK) try { return await api('/api/export'); } catch(e){}
+  return {members, tickets};
+}
+function save() {
+  localStorage.setItem('yeti-hobb-members', JSON.stringify(members));
+  localStorage.setItem('yeti-hobb-tickets', JSON.stringify(tickets));
+}
+function setSyncDot(ok) {
+  const d=document.getElementById('sync-dot');
+  d.className='sync-dot'+(ok?'':' warn');
+  d.title=ok?'✅ Shared backend connected — all users see the same data':'⚠️ Running in local mode (localStorage). Set window.YETI_API_BASE to enable shared backend.';
+}
+
+// ── NAV ──
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',['team','form','tickets'][i]===id));
+  if(id==='team') renderAll();
+  if(id==='tickets') renderKanban();
+}
+
+// ── TEAM RENDER ──
+function renderAll() {
+  renderPending();
+  renderCards();
+  document.getElementById('count-badge').textContent=members.length+' filled';
+}
+function renderPending() {
+  const grid=document.getElementById('pending-grid');
+  const sec=document.getElementById('pending-section');
+  const filled=new Set(members.map(m=>m.name.toLowerCase()));
+  const allPending=[...PENDING,...extraPending];
+  const pend=allPending.filter(p=>!filled.has(p.name.toLowerCase())&&p.name!=='?');
+  const unk=allPending.filter(p=>p.name==='?');
+  if(!pend.length&&!unk.length){sec.style.display='none';return;}
+  sec.style.display='block'; grid.innerHTML='';
+  [...pend,...unk.slice(0,4)].forEach(p=>{
+    const d=document.createElement('div'); d.className='pending-card';
+    d.onclick=()=>{showPage('form');if(p.name!=='?')document.getElementById('f-name').value=p.name;document.getElementById('f-name').focus();};
+    d.innerHTML=`<div class="pending-name"><span class="pending-dot"></span>${p.name}</div><div class="pending-contact">${p.contact}</div><div class="pending-cta">→ Click to fill your card</div>`;
+    grid.appendChild(d);
+  });
+  if(unk.length>4){
+    const d=document.createElement('div');d.className='pending-card';
+    d.innerHTML=`<div class="pending-name">+ ${unk.length-4} more unknown contacts</div><div class="pending-contact">Turkish / Dutch group</div><div class="pending-cta">→ Share link with them</div>`;
+    grid.appendChild(d);
+  }
+}
+function renderCards() {
+  const grid=document.getElementById('team-grid');
+  grid.innerHTML='';
+  const sort=document.getElementById('sort-select').value;
+  let data=[...members].filter(m=>{
+    if(activeFilters.hat!=='all'&&!(m.companyHat||'').includes(activeFilters.hat))return false;
+    if(activeFilters.role!=='all'&&!(m.roleTags||[]).includes(activeFilters.role))return false;
+    return true;
+  });
+  if(sort==='driver-desc') data.sort((a,b)=>(b.fulfillOrOriginate||5)-(a.fulfillOrOriginate||5));
+  if(sort==='driver-asc') data.sort((a,b)=>(a.fulfillOrOriginate||5)-(b.fulfillOrOriginate||5));
+  if(sort==='time-desc'){const tv={'10h+':4,'7–10h':3,'4–6h':2,'~2–3h':1};data.sort((a,b)=>(tv[b.timePerWeek]||0)-(tv[a.timePerWeek]||0));}
+  if(!data.length){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--ink3);font-size:13px">No cards match this filter.</div>';return;}
+  data.forEach((m,i)=>{
+    const c=document.createElement('div');c.className='mcard';c.style.animationDelay=(i*.04)+'s';
+    const top3=(m.projectIncentives||[]).slice(0,3);
+    const driver=m.fulfillOrOriginate||5;
+    const mt=tickets.filter(t=>t.ownerName===m.name||(t.relatedMembers||[]).includes(m.name));
+    c.innerHTML=`
+      <div class="mcard-top">
+        <div><div class="mcard-name">${m.name}</div><div class="mcard-bg">${m.background||''}${m.location?' · '+m.location:''}</div></div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
+          <div class="hat-badge">${HAT[m.companyHat]||'👀'}</div>
+          ${mt.length?`<div class="ticket-count-chip">🎫 ${mt.length}</div>`:''}
+        </div>
+      </div>
+      <div class="mcard-tags">${(m.roleTags||[]).map(r=>`<span class="rtag">${r}</span>`).join('')}</div>
+      ${m.feelsLikePlay?`<div class="mcard-row"><span class="mcard-key">Genius</span>${m.feelsLikePlay.slice(0,80)}${m.feelsLikePlay.length>80?'…':''}</div>`:''}
+      ${m.naturalExecutionTask?`<div class="mcard-row"><span class="mcard-key">Go-time</span>${m.naturalExecutionTask.slice(0,80)}${m.naturalExecutionTask.length>80?'…':''}</div>`:''}
+      ${m.ownedSlice?`<div class="mcard-row"><span class="mcard-key">Owns</span>${m.ownedSlice.slice(0,70)}${m.ownedSlice.length>70?'…':''}</div>`:''}
+      <div class="mcard-footer"><div class="incentive-icons">${top3.map(k=>ICONS[k]||'').join(' ')}</div><div class="time-badge">${m.timePerWeek||'—'}</div></div>
+      <div class="driver-bar"><span>Support</span><div class="driver-track"><div class="driver-fill" style="width:${driver*10}%"></div></div><span>Driver ${driver}/10</span></div>`;
+    c.onclick=()=>openMemberModal(m);
+    grid.appendChild(c);
+  });
+}
+
+// ── MEMBER MODAL ──
+function openMemberModal(m) {
+  document.getElementById('mm-name').textContent=m.name;
+  document.getElementById('mm-sub').textContent=[m.background,m.location].filter(Boolean).join(' · ');
+  const mt=tickets.filter(t=>t.ownerName===m.name||(t.relatedMembers||[]).includes(m.name));
+  document.getElementById('mm-body').innerHTML=`
+    <div class="modal-tags">${(m.roleTags||[]).map(r=>`<span class="modal-tag">${r}</span>`).join('')}<span class="modal-tag">${HAT[m.companyHat]||''}</span></div>
+    <div class="modal-section"><div class="modal-section-title">Zone of Genius</div>${row('Ask me for',m.peopleAskMeFor)}${row('Feels like play',m.feelsLikePlay)}</div>
+    <div class="modal-section"><div class="modal-section-title">Execution</div>${row('Go-time task',m.naturalExecutionTask)}${row('Fun responsibility',m.funResponsibility)}${row('Time / week',m.timePerWeek)}${row('Drainers',m.drainers)}${row('Constraints',m.constraints)}</div>
+    <div class="modal-section"><div class="modal-section-title">Principal Energy</div>${row('Owns slice',m.ownedSlice)}<div class="modal-row"><span class="modal-key">Driver seat</span><div class="modal-driver"><div class="modal-driver-track"><div class="modal-driver-fill" style="width:${(m.driverSeatScore||5)*10}%"></div></div><span>${m.driverSeatScore||'–'}/10</span></div></div>${row('Why',m.driverSeatWhy)}</div>
+    <div class="modal-section"><div class="modal-section-title">Incentives</div><div class="modal-tags">${(m.projectIncentives||[]).map(k=>`<span class="modal-tag">${ICONS[k]||''} ${k}</span>`).join('')}</div>${m.otherIncentive?row('+ One more thing',m.otherIncentive):''}</div>
+    <div class="modal-section"><div class="modal-section-title">Personal Win</div>${row('Win looks like',m.personalWin)}</div>
+    <div class="modal-section"><div class="modal-section-title">Company Hat</div>${row('Hat',HAT[m.companyHat]||'')}<div class="modal-row"><span class="modal-key">Fulfill↔Originate</span><div class="modal-driver"><div class="modal-driver-track"><div class="modal-driver-fill" style="width:${(m.fulfillOrOriginate||5)*10}%"></div></div><span>${m.fulfillOrOriginate||'–'}/10</span></div></div>${row('Why that hat',m.hatWhy)}</div>
+    ${mt.length?`<div class="modal-section"><div class="modal-section-title">🎫 Tickets (${mt.length})</div>${mt.map(t=>`<div class="ticket-link" onclick="closeAllModals();setTimeout(()=>openTicketModal(tickets.find(x=>x.id==='${t.id}')),100)"><span class="ticket-link-title">${t.title}</span><span class="priority-chip priority-${t.priority}">${t.priority}</span><span style="font-size:10px;color:${S_COLOR[t.status]}">● ${t.status}</span></div>`).join('')}</div>`:''}`;
+  document.getElementById('member-modal').classList.add('open');
+}
+function row(k,v){if(!v)return '';return `<div class="modal-row"><span class="modal-key">${k}</span><span class="modal-val">${v}</span></div>`;}
+function closeMemberModal(e){if(e.target===document.getElementById('member-modal'))closeMemberModalBtn();}
+function closeMemberModalBtn(){document.getElementById('member-modal').classList.remove('open');}
+
+// ── KANBAN ──
+function renderKanban() {
+  const kanban=document.getElementById('kanban');
+  kanban.innerHTML='';
+  let data=[...tickets];
+  if(activeTicketFilters.area!=='all') data=data.filter(t=>t.area===activeTicketFilters.area);
+  if(activeTicketFilters.priority!=='all') data=data.filter(t=>t.priority===activeTicketFilters.priority);
+  STATUS_COLS.forEach(status=>{
+    const col=document.createElement('div');col.className='kanban-col';
+    const ct=data.filter(t=>t.status===status);
+    col.innerHTML=`<div class="kanban-col-header"><span class="kanban-col-title" style="color:${S_COLOR[status]}">${status}</span><span class="kanban-col-count">${ct.length}</span></div>`;
+    ct.forEach((t,i)=>{
+      const card=document.createElement('div');card.className='tcard';card.style.animationDelay=(i*.05)+'s';
+      card.innerHTML=`<div class="tcard-title">${t.title}</div><div class="tcard-meta"><span class="priority-chip priority-${t.priority}">${t.priority}</span>${t.area?`<span class="area-chip">${t.area}</span>`:''}<span class="owner-chip">${t.ownerName||'Unassigned'}</span>${t.dueDate?`<span class="due-chip">📅 ${t.dueDate.slice(5)}</span>`:''}</div>`;
+      card.onclick=()=>openTicketModal(t);
+      col.appendChild(card);
+    });
+    kanban.appendChild(col);
+  });
+}
+
+// ── TICKET MODAL ──
+function openNewTicketModal() {
+  currentTicketId=null;
+  document.getElementById('tm-title').textContent='New Ticket';
+  document.getElementById('tm-sub').textContent='';
+  document.getElementById('tm-body').innerHTML=ticketFormHTML(null);
+  document.getElementById('ticket-modal').classList.add('open');
+}
+function openTicketModal(t) {
+  currentTicketId=t.id;
+  document.getElementById('tm-title').textContent=t.title;
+  document.getElementById('tm-sub').textContent=(t.area||'')+(t.ownerName?' · '+t.ownerName:'');
+  document.getElementById('tm-body').innerHTML=ticketFormHTML(t);
+  document.getElementById('ticket-modal').classList.add('open');
+}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function ticketFormHTML(t) {
+  const mOpts=members.map(m=>`<option value="${esc(m.name)}"${t&&t.ownerName===m.name?' selected':''}>${esc(m.name)}</option>`).join('');
+  const relOpts=members.map(m=>`<label class="cbox" style="font-size:11px;padding:4px 9px"><input type="checkbox" value="${esc(m.name)}"${t&&(t.relatedMembers||[]).includes(m.name)?' checked':''}> ${esc(m.name)}</label>`).join('');
+  return `
+    <div class="modal-field"><label>Title *</label><input type="text" id="tf-title" value="${esc(t?t.title:'')}"></div>
+    <div class="modal-field"><label>Description</label><textarea id="tf-desc">${esc(t?t.description||'':'')}</textarea></div>
+    <div class="modal-2col">
+      <div class="modal-field"><label>Status</label><select id="tf-status">${STATUS_COLS.map(s=>`<option${t&&t.status===s?' selected':''}>${s}</option>`).join('')}</select></div>
+      <div class="modal-field"><label>Priority</label><select id="tf-priority">${['High','Medium','Low'].map(p=>`<option${t&&t.priority===p?' selected':''}>${p}</option>`).join('')}</select></div>
+    </div>
+    <div class="modal-2col">
+      <div class="modal-field"><label>Area</label><select id="tf-area"><option value="">— none —</option>${['Content','Ops','Space','Turkish Group','Design','Comms','Other'].map(a=>`<option${t&&t.area===a?' selected':''}>${a}</option>`).join('')}</select></div>
+      <div class="modal-field"><label>Due date</label><input type="date" id="tf-due" value="${t?t.dueDate||'':''}"></div>
+    </div>
+    <div class="modal-field"><label>Owner</label><select id="tf-owner"><option value="">Unassigned</option>${mOpts}</select></div>
+    <div class="modal-field"><label>Related members</label><div class="checkbox-group" id="tf-related" style="margin-top:4px">${relOpts}</div></div>
+    <div class="modal-actions" style="margin-top:10px">
+      ${t?`<button class="btn-danger" onclick="deleteTicket('${t.id}')">Delete</button>`:''}
+      <button class="btn-secondary" onclick="closeTicketModalBtn()">Cancel</button>
+      <button class="btn-primary" onclick="saveTicketUI()">Save Ticket</button>
+    </div>`;
+}
+async function saveTicketUI() {
+  const title=document.getElementById('tf-title').value.trim();
+  if(!title){toast('Title is required');return;}
+  const related=[...document.querySelectorAll('#tf-related input:checked')].map(i=>i.value);
+  const existing=currentTicketId?tickets.find(x=>x.id===currentTicketId):null;
+  const t={
+    id: currentTicketId||'T'+Date.now(),
+    title,
+    description:document.getElementById('tf-desc').value.trim(),
+    status:document.getElementById('tf-status').value,
+    priority:document.getElementById('tf-priority').value,
+    area:document.getElementById('tf-area').value||undefined,
+    ownerName:document.getElementById('tf-owner').value||undefined,
+    relatedMembers:related,
+    dueDate:document.getElementById('tf-due').value||undefined,
+    createdAt:existing?existing.createdAt:Date.now(),
+    updatedAt:Date.now()
+  };
+  await saveTicketAPI(t, !!currentTicketId);
+  const idx=tickets.findIndex(x=>x.id===t.id);
+  if(idx>=0) tickets[idx]=t; else tickets.push(t);
+  save();
+  closeTicketModalBtn();
+  renderKanban();
+  toast(currentTicketId?'✅ Ticket updated':'✅ Ticket created');
+}
+async function deleteTicket(id) {
+  if(!confirm('Delete this ticket?'))return;
+  tickets=tickets.filter(t=>t.id!==id);
+  save();
+  closeTicketModalBtn();
+  renderKanban();
+  toast('Ticket deleted');
+}
+function closeTicketModal(e){if(e.target===document.getElementById('ticket-modal'))closeTicketModalBtn();}
+function closeTicketModalBtn(){document.getElementById('ticket-modal').classList.remove('open');}
+function closeAllModals(){closeMemberModalBtn();closeTicketModalBtn();}
+
+// ── FORM ──
+function gC(id){return[...document.querySelectorAll(`#${id} input:checked`)].map(i=>i.value);}
+function gR(n){const e=document.querySelector(`input[name="${n}"]:checked`);return e?e.value:'';}
+async function submitForm() {
+  const name=document.getElementById('f-name').value.trim();
+  if(!name){toast('Please enter your name first 👆');document.getElementById('f-name').focus();return;}
+  const m={name,background:document.getElementById('f-background').value.trim(),location:document.getElementById('f-location').value.trim(),peopleAskMeFor:document.getElementById('f-askfor').value.trim(),feelsLikePlay:document.getElementById('f-play').value.trim(),roleTags:gC('roleTags-checks'),naturalExecutionTask:document.getElementById('f-natural').value.trim(),funResponsibility:document.getElementById('f-funresp').value.trim(),timePerWeek:gR('time'),drainers:document.getElementById('f-drainers').value.trim(),constraints:document.getElementById('f-constraints').value.trim(),ownedSlice:document.getElementById('f-owned').value.trim(),driverSeatScore:parseInt(document.getElementById('f-driver').value),driverSeatWhy:document.getElementById('f-driverwhy').value.trim(),projectIncentives:gC('incentives-checks'),otherIncentive:document.getElementById('f-otherincentive').value.trim(),personalWin:document.getElementById('f-win').value.trim(),companyHat:gR('hat'),fulfillOrOriginate:parseInt(document.getElementById('f-fulfill').value),hatWhy:document.getElementById('f-hatwhy').value.trim(),submittedAt:Date.now()};
+  await saveMember(m);
+  const idx=members.findIndex(x=>x.name.toLowerCase()===name.toLowerCase());
+  if(idx>=0) members[idx]=m; else members.push(m);
+  save();
+  document.getElementById('count-badge').textContent=members.length+' filled';
+  toast('✅ Card added! Taking you to the Team Map…');
+  setTimeout(()=>showPage('team'),1200);
+}
+
+// ── EXPORT ──
+async function exportJSON() {
+  const data=await getExportData();
+  window.YETI_HOBB_EXPORT=data;
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='yeti-hobb-team-and-tickets.json';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+  toast('📦 JSON downloaded — also at window.YETI_HOBB_EXPORT');
+}
+
+// ── FILTERS ──
+document.querySelectorAll('.fpill[data-f]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const f=btn.dataset.f;
+    document.querySelectorAll(`.fpill[data-f="${f}"]`).forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active'); activeFilters[f]=btn.dataset.v; renderCards();
+  });
+});
+document.querySelectorAll('.fpill[data-tf]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const f=btn.dataset.tf;
+    document.querySelectorAll(`.fpill[data-tf="${f}"]`).forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active'); activeTicketFilters[f]=btn.dataset.tv; renderKanban();
+  });
+});
+
+// ── TOAST ──
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
+
+
+// ── ADD CONTACT ──
+let extraPending = JSON.parse(localStorage.getItem('yeti-hobb-extra-pending') || '[]');
+
+function openAddContactModal() {
+  document.getElementById('ac-name').value = '';
+  document.getElementById('ac-contact').value = '';
+  document.getElementById('add-contact-modal').classList.add('open');
+  setTimeout(() => document.getElementById('ac-name').focus(), 100);
+}
+function closeAddContactModal(e) { if(e.target === document.getElementById('add-contact-modal')) closeAddContactModalBtn(); }
+function closeAddContactModalBtn() { document.getElementById('add-contact-modal').classList.remove('open'); }
+
+function saveNewContact() {
+  const name = document.getElementById('ac-name').value.trim();
+  if (!name) { toast('Please enter a name'); document.getElementById('ac-name').focus(); return; }
+  const contact = document.getElementById('ac-contact').value.trim() || 'No contact saved';
+  extraPending.push({ name, contact });
+  localStorage.setItem('yeti-hobb-extra-pending', JSON.stringify(extraPending));
+  closeAddContactModalBtn();
+  renderPending();
+  toast('✅ ' + name + ' added to pending list');
+}
+
+// ── INIT ──
+(async()=>{
+  document.getElementById('loading-overlay').classList.add('show');
+  await loadData();
+  document.getElementById('loading-overlay').classList.remove('show');
+  renderAll();
+  window.YETI_HOBB_EXPORT={members,tickets};
+})();
+</script>
+
+<!-- ══ ADD CONTACT MODAL ══ -->
+<div class="modal-overlay" id="add-contact-modal" onclick="closeAddContactModal(event)">
+  <div class="modal" style="max-width:400px">
+    <div class="modal-header">
+      <div><div class="modal-name" style="font-size:16px">Add new contact</div><div class="modal-sub">They will appear in the pending list and can fill their card</div></div>
+      <button class="modal-close" onclick="closeAddContactModalBtn()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-field"><label>Name</label><input type="text" id="ac-name" placeholder="Name or nickname"></div>
+      <div class="modal-field"><label>Phone / contact (optional)</label><input type="text" id="ac-contact" placeholder="+49 123 456 7890"></div>
+      <div class="modal-actions" style="margin-top:8px">
+        <button class="btn-secondary" onclick="closeAddContactModalBtn()">Cancel</button>
+        <button class="btn-primary" onclick="saveNewContact()">Add to pending</button>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
 
