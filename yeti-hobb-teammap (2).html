@@ -206,6 +206,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-
     <div class="head-chip">👑 Julia (SA) <span class="head-chip-role">HoD & Logistics · +27 84 277 9697</span></div>
     <div class="head-chip">👑 Valentina F <span class="head-chip-role">HoD & Logistics · +593 98 645 4543</span></div>
     <div class="head-chip">👑 Sandra Hübner <span class="head-chip-role">OberYETI · +49 172 2457729</span></div>
+    <div class="head-chip">🇹🇷 Sedef Şahin <span class="head-chip-role">Turkish Head · sedef@peopletapestry.com · +90 532 276 29 66</span></div>
+    <div class="head-chip">🇹🇷 Bengi Turgan <span class="head-chip-role">Turkish Head · bengi@peopletapestry.com · +90 533 211 68 46</span></div>
+    <div class="head-chip">🇹🇷 Melodi Şahin <span class="head-chip-role">Turkish Head · melodi@peopletapestry.com · +90 530 555 42 45</span></div>
   </div>
   <div class="pending-section" id="pending-section">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
@@ -431,10 +434,8 @@ let activeTicketFilters = {area:'all', priority:'all'};
 let currentTicketId = null;
 
 const PENDING = [
-  {name:'You (Leon)',contact:'Principal'},
   {name:'Clara',contact:'+49 1520 6170489'},
   {name:'Julian',contact:'+49 1515 6140488'},
-
   {name:'Δ',contact:'+49 176 14190405'},
   {name:'Alp Gülcüler',contact:'+90 537 340 93 45'},
   {name:'Annabell',contact:'+49 1514 1221740'},
@@ -443,14 +444,14 @@ const PENDING = [
   {name:'Julia (DE)',contact:'+49 171 8200946'},
   {name:'Kairavin',contact:'+49 176 57790559'},
   {name:'Matty Driesnack',contact:'+49 1522 4891290'},
+  {name:'Melodi Şahin',contact:'+90 530 555 42 45 · melodi@peopletapestry.com'},
+  {name:'Sedef Şahin',contact:'+90 532 276 29 66 · sedef@peopletapestry.com'},
+  {name:'Bengi Turgan',contact:'+90 533 211 68 46 · bengi@peopletapestry.com'},
   {name:'?',contact:'+31 6 51855915'},
-  {name:'?',contact:'+90 530 555 42 45'},
   {name:'?',contact:'+90 530 937 30 97'},
   {name:'?',contact:'+90 531 985 68 19'},
-  {name:'?',contact:'+90 532 276 29 66'},
   {name:'?',contact:'+90 532 601 84 99'},
   {name:'?',contact:'+90 532 667 44 19'},
-  {name:'?',contact:'+90 533 211 68 46'},
 ];
 const ICONS = {Money:'💰',Portfolio:'📁',Network:'🌐',Mentorship:'🧑‍🏫',Clarity:'🧭',Leadership:'🧱',Travel:'✈️',Opportunities:'🎯',Community:'🤝',Fun:'😄'};
 const HAT = {Ops:'🧱 Ops',Management:'🧭 Lead','C-Level':'🚀 Vision','Not sure':'👀 Not sure'};
@@ -768,9 +769,27 @@ function saveNewContact() {
 }
 
 // ── INIT ──
+// Pre-seeded members — loaded instantly, backend overwrites if available
+const SEEDED_MEMBERS = [{"name": "Etkin Celep", "background": "Physics Engineering student at Istanbul Technical University. Founder of a student-led organization building scalable support systems for students (itüöder). Experience across marketing, business development, and creative production.", "location": "Istanbul, Turkey", "peopleAskMeFor": "Structuring ideas into executable projects\nBuilding and scaling communities\nPartnerships, sponsorships, and business development\nContent strategy and storytelling\nMaking messy things clear and actionable", "feelsLikePlay": "Turning vague ideas into real, working systems\nDesigning projects from zero to execution\nConnecting people and creating opportunities between them\nWriting messages, pitches, and positioning ideas clearly\nThinking about how things can scale and sustain themselves", "roleTags": ["Builder", "Strategist", "Communicator"], "naturalExecutionTask": "I usually structure the work and make it actionable — define next steps, set up a simple system (Notion/flow), and start the first version (doc, message, or concept) so the team has something real to react to.", "funResponsibility": "Owning a part of the project end-to-end — especially where I can shape the direction and turn it into something real and visible with the team.", "timePerWeek": "4–6h", "drainers": "Long discussions without clear decisions or next steps\nPurely operational repetitive tasks with no ownership or impact\nUnclear roles where responsibility is diffused", "constraints": "Final year of university + ongoing projects, so time is limited but flexible when there is clear ownership and impact", "ownedSlice": "Creative direction — how we show up visually, what story we tell, and how we make the youth voice land with impact. This includes social media, but also the on-site experience: how things look, feel, and get remembered. I want to own the thread that connects everything we create into one coherent identity.", "driverSeatScore": 9, "driverSeatWhy": "I’m comfortable taking ownership and turning ideas into execution, especially in content and strategy. The only reason it’s not 10 is time constraints, but when I take something on, I make sure it moves forward and becomes real.", "projectIncentives": ["Network", "Opportunities", "Community"], "otherIncentive": "", "personalWin": "I want to leave Athens with at least two or three real connections who remember me for what I brought, not just that I was there. And I want a piece of work I'm genuinely proud to show — something that proves I can take an idea from concept to execution under real pressure.", "companyHat": "C-Level", "fulfillOrOriginate": 7, "hatWhy": "I naturally think in terms of direction, structure, and how things should come together end-to-end. In my past projects, I’ve been most effective when defining the approach and then turning it into something real with the team, rather than just executing predefined tasks.", "submittedAt": 1775078551511, "updatedAt": 1775078551824}, {"name": "Leon", "background": "Fine Arts", "location": "Dresden | Graduated with Diploma Summer 2025", "peopleAskMeFor": "“Can we look at this differently?”\n“How can we hack reality with this?”\n“Where’s the unfair advantage here?”\nTurning chaos into a clear system or framework\nSharpening messages, offers, and stories so they click", "feelsLikePlay": "- Decomposing messy problems into steps, flows, and systems\n- Connecting weird dots between art, tech, business, and people\n- Sitting in long 1:1s, asking questions, and reframing someone’s situation\n- Designing tools and workflows that collapse effort (content systems, robots, processes)\n- Radical Decomposition\n- Thinking about how to kick in the dore, and pull all levers I can get hands on", "roleTags": ["Builder", "Strategist", "Communicator"], "naturalExecutionTask": "I open a doc or whiteboard, map the whole thing as a system, define lanes, and then start building the first working version (tool, script, content flow) so people can plug into something real.", "funResponsibility": "Owning the “thinking + systems + story” side: designing the overall flow of the youth intervention and the Team Map / documentation so everyone’s work becomes visible and reusable.", "timePerWeek": "7–10h", "drainers": "- Endless open discussions with no decision or owner\n- Vague tasks like “someone should…”\n- Last‑minute chaos that could have been avoided with basic planning\n- Pure surface‑level “vibes” with no real outcome", "constraints": "No exams. Balancing some freelance/content work and system‑building, but calendar is flexible as long as roles are clear and we don’t decide everything 24h before.\n\nI'm not up for working through the night currently...", "ownedSlice": "Owning the Team Map + content & documentation system for the youth intervention: How we capture what happens, and how we turn it into proof and assets for HOBB, YETI, and the team.", "driverSeatScore": 10, "driverSeatWhy": "I’m ready to drive on systems, content, and structure, but I don’t want to be “CEO of everything.” I need co‑owners on ops/logistics and stakeholder stuff so I can stay zoomed out on the bigger picture and keep all the moving parts aligned.\n\nI spent the last 6 months building a ready‑to‑deploy content system that lets us create set-and-forget style 1 reel in about 102 seconds. I can contribute this as media leverage for the whole youth team.", "projectIncentives": ["Portfolio", "Network", "Mentorship", "Leadership", "Opportunities"], "otherIncentive": "One or two deep relationships out of this – with people I’d genuinely build with again (co‑founder, long‑term collaborator, or mentor). I built alone most of the time, its more fun to escape boredom together, isn't it?", "personalWin": "Looking back in 6 months, a win would be:\n- We shipped a youth intervention at HOBB that people still talk about.\nTheir life gained more quality through beauty and empathy that got productised. \n- I have a clear story + proof of how my system‑thinking and content tools made the project better.\n- I leave with 2–3 people I trust and want to build with again, plus something I can put in my portfolio as “this is what I do in the world.”", "companyHat": "C-Level", "fulfillOrOriginate": 8, "hatWhy": "I like originating frameworks, direction, and systems, then working with others to make them real. I don’t want to just execute someone else’s vague idea, and I also don’t want to run every single operational detail alone, even though I can. The sweet spot for me is: design the game, co‑lead it, and join then strong ops people who fly with me inside it.", "submittedAt": 1775079198820, "updatedAt": 1775079198935}];
+
 (async()=>{
   document.getElementById('loading-overlay').classList.add('show');
+  // Seed members from embedded data so cards appear even before backend responds
+  const stored = JSON.parse(localStorage.getItem('yeti-hobb-members')||'[]');
+  SEEDED_MEMBERS.forEach(seed => {
+    const exists = stored.find(m => m.name.toLowerCase() === seed.name.toLowerCase());
+    if (!exists) stored.push(seed);
+  });
+  localStorage.setItem('yeti-hobb-members', JSON.stringify(stored));
+  
   await loadData();
+  
+  // Ensure seeded members always present even if backend is empty
+  SEEDED_MEMBERS.forEach(seed => {
+    const exists = members.find(m => m.name.toLowerCase() === seed.name.toLowerCase());
+    if (!exists) members.push(seed);
+  });
+  
   document.getElementById('loading-overlay').classList.remove('show');
   renderAll();
   window.YETI_HOBB_EXPORT={members,tickets};
@@ -796,4 +815,3 @@ function saveNewContact() {
 </div>
 </body>
 </html>
-
