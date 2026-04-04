@@ -1,39 +1,6 @@
 {
   "members": [
     {
-      "name": "Kaya",
-      "background": "Chemistry, Sustainability, Community",
-      "location": "İstanbul/TUR",
-      "peopleAskMeFor": "organizing event, gathering, meeting - strategy",
-      "feelsLikePlay": "Mobilising people, communicating, organizing",
-      "roleTags": [
-        "Strategist",
-        "Connector",
-        "Organizer"
-      ],
-      "naturalExecutionTask": "I set up a meeting, and I opened an Excel sheet (Notion is also okay) for project timeline and task distribution.",
-      "funResponsibility": "",
-      "timePerWeek": "4–6h",
-      "drainers": "slow and unclear communication, not saying no to what you couldn't do",
-      "constraints": "Work and other volunteer projects",
-      "ownedSlice": "strategy and teamwork in the preparation process, and on-site experience",
-      "driverSeatScore": 8,
-      "driverSeatWhy": "I am super-excited for what we will do together. Let's do it!",
-      "projectIncentives": [
-        "Portfolio",
-        "Network",
-        "Community",
-        "Fun"
-      ],
-      "otherIncentive": "",
-      "personalWin": "While creating a new thing together, we also had fun and good memories in Athens",
-      "companyHat": "Management",
-      "fulfillOrOriginate": 8,
-      "hatWhy": "I see myself between team lead and C-level vision. I can also do any implementation if needed. That's all okay for me.",
-      "submittedAt": 1775127295185,
-      "updatedAt": 1775127295470
-    },
-    {
       "name": "Bensu Altın",
       "background": "Psychology",
       "location": "Tilburg/Netherlands",
@@ -429,7 +396,50 @@
       "hatWhy": "I naturally think in terms of direction, structure, and how things should come together end-to-end. In my past projects, I’ve been most effective when defining the approach and then turning it into something real with the team, rather than just executing predefined tasks.",
       "submittedAt": 1775285135877,
       "updatedAt": 1775285135959
+    },
+    {
+      "name": "Julian",
+      "background": "computer science",
+      "location": "Dresden / Germany",
+      "peopleAskMeFor": "Content creation (photo, video, text), explaining things, AI tools, strategic stuff, storytelling",
+      "feelsLikePlay": "Script writing, prototyping with AI, researching interesting topics (esp. Psychology, philosophy), developing Tool Stacks and technical Systems, Video editing",
+      "roleTags": [
+        "Strategist",
+        "Communicator",
+        "Visual"
+      ],
+      "naturalExecutionTask": "Pitch deck / script to find a good story, getting AI for quick ideation",
+      "funResponsibility": "Everything related to visuals and content; Setting up the Systems for things to run smoothöy",
+      "timePerWeek": "4–6h",
+      "drainers": "Logistics, economics",
+      "constraints": "",
+      "ownedSlice": "Content & docs",
+      "driverSeatScore": 6,
+      "driverSeatWhy": "Have a lot of things on my plate currently, but I've been in the driver's seat for the past 6 months (semester lead), so would still manage.",
+      "projectIncentives": [
+        "Portfolio",
+        "Mentorship",
+        "Opportunities",
+        "Fun"
+      ],
+      "otherIncentive": "seeing/experiencing a more holistic, philosophical aproach to Business.",
+      "personalWin": "Regarding our topic: optimism. Showing people on the event that things aren't as bad or negative as we often think them to be. Showing them the importance of perspective. Especially regarding Digital Media.",
+      "companyHat": "C-Level",
+      "fulfillOrOriginate": 6,
+      "hatWhy": "Very interested in our topic of perspective. Have done Workshops with students related to that topic. Know about the relevancy, especially from the angle of how social media influences our brain and mental health and view on the World. Would love to include that in our project. But I'm also adaptive if it goes into another direction.",
+      "submittedAt": 1775294560382,
+      "updatedAt": 1775294559690
     }
   ],
-  "tickets": []
+  "tickets": [],
+  "pending": [
+    {
+      "name": "Matty Driesnack",
+      "phone": "+49 1522 4891290"
+    },
+    {
+      "name": "Beste",
+      "phone": "+31 6 13043779"
+    }
+  ]
 }
